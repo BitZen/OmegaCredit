@@ -1,0 +1,21 @@
+
+<%= form_for(@credit) do |f| %>
+  
+
+  <div class="field">
+    <%= f.label :amount %>:
+    <%= f.number_field :amount, :step => '.01' %>
+  </div>
+  <div class="field">
+    <%= f.hidden_field :expires_at, :value =>  1.year.from_now %>
+  </div>
+  <div class="field">
+    <%= f.hidden_field :status, :value => 'active' %>
+  </div>
+  <div class="field">
+    <%= f.hidden_field :credit_holder_id, :value => @credit_holder_id %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,46 @@
+<table class='table'>
+  <thead>
+    <tr>
+      <th class="text-center">First name</th>
+      <th class="text-center">Last name</th>
+      <th class="text-center">Phone number</th>
+      <th class="text-center">Address</th>
+      <th class="text-center">Zip code</th>
+      <th class="text-center">Email address</th>
+      <th class="text-center">Contact method</th>
+      <th class="text-center">Credits total</th>
+      <th colspan="4"></th>
+      <th class="text-center">Add Credit</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% for credit_holder in @credit_holders%>
+      <tr>
+        <td align="center"><%= credit_holder.first_name %></td>
+        <td align="center"><%= credit_holder.last_name %></td>
+        <td align="center"><%= credit_holder.phone_number %></td>
+        <td align="center"><%= credit_holder.address %></td>
+        <td align="center"><%= credit_holder.zip_code %></td>
+        <td align="center"><%= credit_holder.email_address %></td>
+        <td align="center"><%= credit_holder.contact_method %></td>
+        <td align="center"><%= number_to_currency(credit_holder.credits_total) %></td>
+        <td align="center"><%= link_to checkout_path(credit_holder.id),:class => 'btn btn-success btn-small' do %>
+        <i class="fa fa-shopping-cart fa-plus" style="color:white;"></i>
+        <%end%>
+        </td>
+        <td align="center"><%= link_to 'Details', credit_holder, :class => 'btn btn-info btn-small' %></td>
+        <td align="center"><%= link_to 'Edit', edit_credit_holder_path(credit_holder), :class => 'btn btn-default btn-small' %></td>
+        <td align="center"><%= link_to 'Destroy', credit_holder, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-default btn-small' %></td>
+        <td align="center"><%= link_to new_credit_path(:credit_holder_id => credit_holder.id),:class => 'btn btn-success btn-small' do %>
+        <i class="fa fa-plus"></i>
+        <%end%>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div class="text-center">
+  <%= will_paginate @credit_holders, renderer: BootstrapPagination::Rails %>
+</div>

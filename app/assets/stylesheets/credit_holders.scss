@@ -1,0 +1,23 @@
+// Place all the styles related to the CreditHolders controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+
+.credit_total {
+	display: inline-block;
+	float: right;
+}
+.holder_name {
+	display: inline-block;
+}
+.info-panel {
+	display: inline-block;
+}
+h3.total_amount {
+	float: right;
+	margin-top: auto;
+}
+#credit_holders td{
+	vertical-align:inherit;
+	
+}

@@ -1,0 +1,19 @@
+<% if notice.present? %>
+<h4 class="alert alert-success" role="alert" id="notice"><strong><%= notice %></strong></h4>
+<% end %>
+
+<div class='col-sm-12'>
+<div class="panel panel-default" id="checkout-panel">
+ <div class="panel-heading">
+ 	<h4>Checkout for <%= @credit_holder.first_name %> <%= @credit_holder.last_name %><%= link_to root_path, :class => 'btn btn-default', :style => 'float: right;' do %><i class="fa fa-home"></i><%end%></h4>
+ </div>
+ <div class ="panel-body info-panel">
+ <%= form_tag("/process_transaction", method: "get") do %>
+ 	<%= label_tag(:total, "Used books total:") %>
+ 	<%= number_field_tag(:total, nil, :step => '.01') %>
+ 	<%= hidden_field_tag(:credit_holder_id, @credit_holder.id) %>
+ 	<%= submit_tag("Checkout") %>
+ <%end%>
+ </div>
+</div>
+</div>

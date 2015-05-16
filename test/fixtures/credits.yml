@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  amount: 1
+  expires_at: 2015-05-09 21:09:18
+  status: MyString
+  credit_holder_id: 1
+
+two:
+  amount: 1
+  expires_at: 2015-05-09 21:09:18
+  status: MyString
+  credit_holder_id: 1

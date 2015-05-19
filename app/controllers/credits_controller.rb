@@ -8,46 +8,16 @@ class CreditsController < ApplicationController
   end
 
   def process_transaction
-    total = params[:total].to_f
-    @credits = active_credits_array(params[:credit_holder_id])
-    @remaining_balance_owed = 0
-    @credit_holder = CreditHolder.find(params[:credit_holder_id])
-    i = 0
-    while i < @credits.count
-      if @remaining_balance_owed > 0
-        if @credits[i] >= total
-          @remaining_credit_balance = @credits[i].amount - @remaining_balance_owed
-          #update @credits[i].amount to equal @remaining_credit_balance
-          credit_balance(@credits[i].id, @remaining_credit_balance)
-          #update creditholder.credits_total
-          update_credits_total(params[:credit_holder_id])
-          i = @credits.count
-        else 
-          @remaining_balance_owed = @remaining_balance_owed - @credits[i].amount
-          #update @credits[i].amount to zero and status to 'used'
-          credit_used(@credits[i].id)
-          #update creditholder.credits_total
-          update_credits_total(params[:credit_holder_id])
-          i +=1
-        end
-      elsif @credits[i].amount >= total
-        @remaining_credit_balance = @credits[i].amount - total
-        #update @credits[i].amount to equal @remaining_credit_balance
-        credit_balance(@credits[i].id, @remaining_credit_balance)
-        #update creditholder.credits_total
-        update_credits_total(params[:credit_holder_id])
-        i = @credits.count
-      elsif @credits[i].amount < total
-        @remaining_balance_owed = total - @credits[i].amount
-        #update @credits[i].amount to zero and status to 'used'
-        credit_used(@credits[i].id)
-        #update creditholder.credits_total
-        update_credits_total(params[:credit_holder_id])
-        i +=1
-      end
-    end
-    redirect_to root_path, notice: "Transaction complete!"
-  end
+    @total = params[:total].to_f
+    id = params[:credit_holder_id]
+    @credits = credits_from_id(params[:credit_holder_id])
+    @oldest = get_oldest(@credits)
+    puts '********************************************'
+    @paymentamount = cashier(id, @total)
+    puts '********************************************'
+    update_credits_total(params[:credit_holder_id])
+
+  end 
 
   def add_credit(credit_holder, credit)
     new_total = credit.amount + credit_holder.credits_total

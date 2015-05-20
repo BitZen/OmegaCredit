@@ -53,8 +53,18 @@ class CreditsController < ApplicationController
 
     respond_to do |format|
       if @credit.save
-        add_credit(CreditHolder.find(@credit.credit_holder_id), @credit)
-        format.html { redirect_to @credit, notice: 'Credit was successfully created.' }
+        notice = 'Credit was successfully created.'
+        creditholder = CreditHolder.find(@credit.credit_holder_id)
+        if  @credit[:send_email] == 1 && creditholder.email_address.present?
+          CreditNotifier.created(creditholder,@credit).deliver
+          notice = 'Credit was successfully created and Email notification was sent.'
+        elsif @credit[:send_email] == 0
+          notice = 'Credit was successfully created.'
+        else 
+          notice = 'Credit was successfully created but Email notification was NOT sent, check to see if we have a valid email for that customer.'
+        end
+        add_credit(creditholder, @credit)
+        format.html { redirect_to root_path, notice: notice }
         format.json { render :show, status: :created, location: @credit }
       else
         format.html { render :new }
@@ -95,6 +105,6 @@ class CreditsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def credit_params
-      params.require(:credit).permit(:amount, :expires_at, :status, :credit_holder_id)
+      params.require(:credit).permit(:amount, :expires_at, :status, :credit_holder_id, :send_email)
     end
 end

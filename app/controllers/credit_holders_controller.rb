@@ -17,6 +17,7 @@ class CreditHoldersController < ApplicationController
   # GET /credit_holders/1
   # GET /credit_holders/1.json
   def show
+    @credits = Credit.where(:credit_holder_id => @credit_holder.id).paginate(:per_page => 10, :page => params[:page])
   end
 
   # GET /credit_holders/new

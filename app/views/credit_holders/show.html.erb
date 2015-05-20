@@ -63,16 +63,20 @@
       <th>Status</th>
     </thead>
     <tbody>
-      <% @credit_holder.credits.each do |c| %>
+    
+      <% for credit in @credits %>
         <tr>
-          <td><%= number_to_currency(c.amount) %></td>
-          <td><%= local_time(c.created_at)%></td>
-          <td><%= local_time(c.expires_at)%></td>
-          <td><%= c.status %></td>
+          <td><%= number_to_currency(credit.amount) %></td>
+          <td><%= local_time(credit.created_at)%></td>
+          <td><%= local_time(credit.expires_at)%></td>
+          <td><%= credit.status %></td>
         </tr>
       <% end %>
     </tbody>
   </table>
+  <div class="text-center">
+    <%= will_paginate @credits, renderer: BootstrapPagination::Rails %>
+  </div>
   <h3 class='total_amount'><strong>Total:</strong><%= number_to_currency(@credit_holder.credits_total) %></h3>
   </p>
   </div>

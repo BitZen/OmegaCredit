@@ -1,4 +1,6 @@
 module CreditsHelper
+	
+	#returns array of active credits for a single holder
 	def active_credits_array(holder_id)
 		credits = []
 		holder = CreditHolder.find(holder_id)
@@ -9,7 +11,8 @@ module CreditsHelper
 		end
 		return credits
 	end
-
+	
+	#called from process_transaction in credits controller
 	def cashier(holder_id,owed)
 		subtotal = owed
 		credits = credits_from_id(holder_id)
@@ -60,11 +63,13 @@ module CreditsHelper
 		return oldest
 	end	
 
+	#set a credit amount to zero and mark as used
 	def credit_used(credit_id)
 		Credit.update(credit_id, :amount => 0.00, :status => 'used')
 		puts "CREDIT USED RUN"
 	end
 
+	#update the creditholder.credits_total column with current amount
 	def update_credits_total(holder_id)
 		credits = []
 		CreditHolder.find(holder_id).credits.each do |c|

@@ -15,6 +15,10 @@
   <div class="field">
     <%= f.hidden_field :credit_holder_id, :value => @credit_holder_id %>
   </div>
+  <div class="field">
+    <%= f.label "Send E-Mail Notification" %>
+    <%= f.check_box :send_email %>
+  </div>
   <div class="actions">
     <%= f.submit %>
   </div>

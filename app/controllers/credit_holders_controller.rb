@@ -6,10 +6,15 @@ class CreditHoldersController < ApplicationController
     @credit_holder = CreditHolder.find(params[:id])
     @credits = @credit_holder.credits
   end
+
+  def transaction_history
+    @transactions = Transaction.get_transactions(params[:id]).paginate(:per_page => 25, :page => params[:page])
+    @credit_holder = CreditHolder.find(params[:id])
+  end
   # GET /credit_holders
   # GET /credit_holders.json
   def index
-    @credit_holders = CreditHolder.search(params[:search]).paginate(:per_page => 1, :page => params[:page])
+    @credit_holders = CreditHolder.search(params[:search]).paginate(:per_page => 25, :page => params[:page])
     
     #@credit_holders = CreditHolder.all
   end
@@ -17,9 +22,9 @@ class CreditHoldersController < ApplicationController
   # GET /credit_holders/1
   # GET /credit_holders/1.json
   def show
-    @credits = Credit.where(:credit_holder_id => @credit_holder.id).paginate(:per_page => 10, :page => params[:page])
+    @credits = CreditHolder.find(params[:id]).credits.where(:status => "active")
+    @transactions = CreditHolder.find(params[:id]).transactions.where(:event => "use").order("created_at DESC").limit(5)
   end
-
   # GET /credit_holders/new
   def new
     @credit_holder = CreditHolder.new

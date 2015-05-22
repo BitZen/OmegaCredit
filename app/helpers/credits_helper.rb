@@ -19,20 +19,44 @@ module CreditsHelper
 		payment = get_oldest(credits)
 
 		if subtotal == 0
-			puts "TOTAL IS ZERO"
+			logger.info "TOTAL IS ZERO"
 			puts subtotal
 		elsif payment.present? != true
-			puts "NO PAYMENT PRESENT #{owed} IS STILL OWED"
+			logger.info "NO PAYMENT PRESENT #{owed} IS STILL OWED"
 			return owed 
-		elsif payment.present? and subtotal > payment["amount"]
-			puts "PAYMENT OF #{payment['amount']} IS PRESENT AND LESS THAN THE TOTAL OF #{subtotal}" 
+		elsif payment.present? and subtotal >= payment["amount"]
+			logger.info "PAYMENT OF #{payment['amount']} IS PRESENT AND LESS THAN OR EQUAL TO THE TOTAL OF #{subtotal}" 
 			remainder = subtotal - payment["amount"]
 			self.credit_used(payment["id"])
+			transaction = Transaction.new do |t|
+	          t.event = "use"
+	          t.amount_used = subtotal
+	          t.amount_remaining = 0
+	          t.credit_id = payment["id"]
+	          t.credit_holder_id = holder_id
+        	end
+	        if transaction.save
+	          logger.info "New Transaction: #{transaction.attributes.inspect}"
+	        else 
+	          logger.warn "Transaction did not save"
+	        end
 			payment = nil
-		elsif payment.present? and subtotal <= payment["amount"]
-			puts "THE PAYMENT OF #{payment['amount']} IS PRESENT AND GREATER THAN THE TOTAL OF #{subtotal}"
+		elsif payment.present? and subtotal < payment["amount"]
+			logger.info "THE PAYMENT OF #{payment['amount']} IS PRESENT AND GREATER THAN THE TOTAL OF #{subtotal}"
 			change = payment["amount"] - subtotal
-			self.credit_balance(payment["id"], change) 
+			self.credit_balance(payment["id"], change)
+			transaction = Transaction.new do |t|
+	          t.event = "use"
+	          t.amount_used = subtotal
+	          t.amount_remaining = change
+	          t.credit_id = payment["id"]
+	          t.credit_holder_id = holder_id
+        	end
+	        if transaction.save
+	        	logger.info "New Transaction: #{transaction.attributes.inspect}"
+	        else 
+	          	logger.warn "Transaction did not save"
+	        end 
 		end
 
 		if remainder
@@ -43,7 +67,7 @@ module CreditsHelper
 
 	def credit_balance(credit_id, new_amount)
 		Credit.update(credit_id, :amount => new_amount.to_f)
-		puts "CREDIT BALANCE RUN"
+		logger.info "CREDIT BALANCE RUN"
 	end
 
 	#builds a array of all a credit holders currently active credits 
@@ -66,7 +90,7 @@ module CreditsHelper
 	#set a credit amount to zero and mark as used
 	def credit_used(credit_id)
 		Credit.update(credit_id, :amount => 0.00, :status => 'used')
-		puts "CREDIT USED RUN"
+		logger.info "CREDIT USED RUN"
 	end
 
 	#update the creditholder.credits_total column with current amount

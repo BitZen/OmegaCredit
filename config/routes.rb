@@ -1,10 +1,13 @@
 Rails.application.routes.draw do
+  resources :transactions
   resources :credits
   resources :credit_holders
   get'/process_transaction' => 'credits#process_transaction'
-  get '/credits/checkout/:credit_holder_id' => 'credits#checkout', as: :checkout
+  get '/checkout/:credit_holder_id' => 'credits#checkout', as: :checkout
   get 'credits/new/:credit_holder_id' => 'credits#new'
   get 'credit_holders/:id/list_credits' => 'credit_holders#list_credits', as: :list_credits
+  get ':id/transaction_history' => 'credit_holders#transaction_history', as: :transaction_history
+  get '/dashboard' => 'transactions#dashboard'
   root "credit_holders#index"
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

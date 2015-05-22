@@ -7,6 +7,10 @@
     <%= f.number_field :amount, :step => '.01' %>
   </div>
   <div class="field">
+    <%= f.label :Number_Of_Books %>:
+    <%= f.number_field :num_books %>
+  </div>
+  <div class="field">
     <%= f.hidden_field :expires_at, :value =>  1.year.from_now %>
   </div>
   <div class="field">
@@ -14,6 +18,10 @@
   </div>
   <div class="field">
     <%= f.hidden_field :credit_holder_id, :value => @credit_holder_id %>
+  </div>
+  <div class="field">
+    <%= f.label "Donate" %>
+    <%= f.check_box :donate %>
   </div>
   <div class="field">
     <%= f.label "Send E-Mail Notification" %>

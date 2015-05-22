@@ -1,0 +1,38 @@
+<div class='well'>
+<h2 class='holder_name'>Transaction History for <%= @credit_holder.last_name%>,<%= @credit_holder.first_name %></h2>
+<%= link_to credit_holder_path(params[:id]), :class => 'btn btn-default', :style => 'float: right;' do %>
+  <i class="fa fa-arrow-left"></i>
+<%end%>
+</div>
+<table class='table'>
+  <thead>
+    <tr>
+      <th class="text-center">Credit Id</th>
+      <th class="text-center">Date</th>
+      <th class="text-center">Type</th>
+      <th class="text-center">Amount</th>
+      <th class="text-center">Number of books</th>
+      <th class="text-center">Donate</th>
+      <th class="text-center">Amount Used</th>
+      <th class="text-center">Amount Remaining</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%for transaction in @transactions%>
+      <tr>
+      	<td align="center"><%= transaction.credit_id %>
+      	<td align="center"><%= local_time(transaction.created_at) %></td>
+        <td align="center"><%= transaction.event %></td>
+        <td align="center"><%= transaction.amount ? number_to_currency(transaction.amount) : "-"%></td>
+        <td align="center"><%= transaction.num_books ? transaction.num_books : "-" %></td>
+        <td align="center"><%= donate(transaction) %></td>
+        <td align="center"><%= transaction.amount_used ? number_to_currency(transaction.amount_used) : "-" %></td>
+        <td align="center"><%= transaction.amount_remaining ? number_to_currency(transaction.amount_remaining) : "-" %></td>
+      </tr>
+    <%end%>  
+  </tbody>
+</table>
+
+<div class="text-center">
+  <%= will_paginate @transactions, renderer: BootstrapPagination::Rails %>
+</div>

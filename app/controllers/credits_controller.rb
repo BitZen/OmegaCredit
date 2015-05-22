@@ -16,6 +16,8 @@ class CreditsController < ApplicationController
     @paymentamount = cashier(id, @total)
     puts '********************************************'
     update_credits_total(params[:credit_holder_id])
+    flash[:notice] = "Transaction Complete"
+    redirect_to root_path
 
   end 
 
@@ -55,6 +57,19 @@ class CreditsController < ApplicationController
       if @credit.save
         notice = 'Credit was successfully created.'
         creditholder = CreditHolder.find(@credit.credit_holder_id)
+        transaction = Transaction.new do |t|
+          t.event = "create"
+          t.amount = @credit.amount
+          t.donate = @credit.donate
+          t.num_books = @credit.num_books
+          t.credit_id = @credit.id
+          t.credit_holder_id = @credit.credit_holder_id
+        end
+        if transaction.save
+          logger.info "New Transaction: #{transaction.attributes.inspect}"
+        else 
+          logger.warn "Transaction did not save"
+        end
         if  @credit[:send_email] == 1 && creditholder.email_address.present?
           CreditNotifier.created(creditholder,@credit).deliver
           notice = 'Credit was successfully created and Email notification was sent.'
@@ -105,6 +120,6 @@ class CreditsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def credit_params
-      params.require(:credit).permit(:amount, :expires_at, :status, :credit_holder_id, :send_email)
+      params.require(:credit).permit(:amount, :expires_at, :status, :credit_holder_id, :send_email, :donate, :num_books)
     end
 end

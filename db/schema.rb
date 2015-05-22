@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150520035138) do
+ActiveRecord::Schema.define(version: 20150522211643) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,6 +37,21 @@ ActiveRecord::Schema.define(version: 20150520035138) do
     t.datetime "updated_at",                     null: false
     t.float    "amount",           default: 0.0
     t.integer  "send_email"
+    t.integer  "donate"
+    t.integer  "num_books"
+  end
+
+  create_table "transactions", force: :cascade do |t|
+    t.integer  "credit_holder_id"
+    t.float    "amount"
+    t.integer  "donate"
+    t.integer  "num_books"
+    t.float    "amount_used"
+    t.float    "amount_remaining"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+    t.string   "event"
+    t.integer  "credit_id"
   end
 
 end

@@ -9,76 +9,98 @@
 </div>
 
 <div class="col-sm-6">
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h2 class="panel-title" style="float: left;"><strong>Customer Information</strong></h2>
-    <%= link_to 'Edit', edit_credit_holder_path(@credit_holder), :class => 'btn btn-default', :style => 'float: right; display: -webkit-inline-box;' %>
-    <div class="clearfix"></div>
+  <div class="row" style="margin-left:0;">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title" style="float: left;"><strong>Customer Information</strong></h2>
+        <%= link_to 'Edit', edit_credit_holder_path(@credit_holder), :class => 'btn btn-default', :style => 'float: right; display: -webkit-inline-box;' %>
+        <div class="clearfix"></div>
+      </div>
+      <div class ="panel-body info-panel">
+        <p>
+          <strong>Phone number:</strong>
+          <%= @credit_holder.phone_number %>
+        </p>
+
+        <p>
+          <strong>Address:</strong>
+          <%= @credit_holder.address %>
+        </p>
+
+        <p>
+          <strong>Zip code:</strong>
+          <%= @credit_holder.zip_code %>
+        </p>
+
+        <p>
+          <strong>Credits total:</strong>
+          <%= number_to_currency(@credit_holder.credits_total) %>
+        </p>
+
+        <p>
+          <strong>Email address:</strong>
+          <%= @credit_holder.email_address %>
+        </p>
+
+        <p>
+          <strong>Contact method:</strong>
+          <%= @credit_holder.contact_method %>
+        </p>
+      </div>
+    </div>
   </div>
-  <div class ="panel-body info-panel">
-    <p>
-      <strong>Phone number:</strong>
-      <%= @credit_holder.phone_number %>
-    </p>
-
-    <p>
-      <strong>Address:</strong>
-      <%= @credit_holder.address %>
-    </p>
-
-    <p>
-      <strong>Zip code:</strong>
-      <%= @credit_holder.zip_code %>
-    </p>
-
-    <p>
-      <strong>Credits total:</strong>
-      <%= number_to_currency(@credit_holder.credits_total) %>
-    </p>
-
-    <p>
-      <strong>Email address:</strong>
-      <%= @credit_holder.email_address %>
-    </p>
-
-    <p>
-      <strong>Contact method:</strong>
-      <%= @credit_holder.contact_method %>
-    </p>
+  <div class="row" style="margin-left:0;">
+  <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title" style="float: left;"><strong>Recently Used Credits</strong></h2>
+        <%= link_to 'Full Transaction History', transaction_history_path(@credit_holder), :class => 'btn btn-default', :style => 'float: right; display: -webkit-inline-box;' %>
+        <div class="clearfix"></div>
+      </div>
+      <div class ="panel-body">
+        <table class='table'>
+          <thead>
+            <th>Date</th>
+            <th>Amount Used</th>
+            <th>Amount Remaining</th>
+          </thead>
+          <tbody>
+            <% for transaction in @transactions %>
+              <tr>
+                <td><%= local_time(transaction.created_at) %></td>
+                <td><%= number_to_currency(transaction.amount_used) %></td>
+                <td><%= number_to_currency(transaction.amount_remaining) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+       
+      </div>
+    </div>
   </div>
-</div>
 </div>
 <div class="col-sm-6"%>
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h2 class="panel-title"><strong>Credits</strong></h2>
+    <h2 class="panel-title"><strong>Active Credits</strong></h2>
   </div>
   <div class =" panel-body credits-panel">
-  <p>
   <table class='table'>
     <thead>
       <th>Amount</th>
       <th>Created</th>
       <th>Expires</th>
-      <th>Status</th>
     </thead>
     <tbody>
-    
       <% for credit in @credits %>
         <tr>
           <td><%= number_to_currency(credit.amount) %></td>
           <td><%= local_time(credit.created_at)%></td>
           <td><%= local_time(credit.expires_at)%></td>
-          <td><%= credit.status %></td>
         </tr>
       <% end %>
     </tbody>
   </table>
-  <div class="text-center">
-    <%= will_paginate @credits, renderer: BootstrapPagination::Rails %>
-  </div>
   <h3 class='total_amount'><strong>Total:</strong><%= number_to_currency(@credit_holder.credits_total) %></h3>
-  </p>
   </div>
 </div>
 </div>

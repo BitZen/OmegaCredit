@@ -5,6 +5,7 @@
 <table>
   <thead>
     <tr>
+      <th>Id</th>
       <th>Amount</th>
       <th>Expires at</th>
       <th>Status</th>
@@ -16,6 +17,7 @@
   <tbody>
     <% @credits.each do |credit| %>
       <tr>
+        <td><%= credit.id %></td>
         <td><%= credit.amount %></td>
         <td><%= credit.expires_at %></td>
         <td><%= credit.status %></td>

@@ -30,7 +30,7 @@ module CreditsHelper
 			self.credit_used(payment["id"])
 			transaction = Transaction.new do |t|
 	          t.event = "use"
-	          t.amount_used = subtotal
+	          t.amount_used = payment["amount"]
 	          t.amount_remaining = 0
 	          t.credit_id = payment["id"]
 	          t.credit_holder_id = holder_id
@@ -67,7 +67,7 @@ module CreditsHelper
 
 	def credit_balance(credit_id, new_amount)
 		Credit.update(credit_id, :amount => new_amount.to_f)
-		logger.info "CREDIT BALANCE RUN"
+		logger.info "CREDIT ID:#{credit_id} NEW BALANCE: #{new_amount}"
 	end
 
 	#builds a array of all a credit holders currently active credits 

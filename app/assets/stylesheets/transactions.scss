@@ -1,3 +1,79 @@
-// Place all the styles related to the transactions controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+
+body.dashboard {
+	background:
+	radial-gradient(black 15%, transparent 16%) 0 0,
+	radial-gradient(black 15%, transparent 16%) 8px 8px,
+	radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 0 1px,
+	radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 8px 9px;
+	background-color:#282828;
+	background-size:16px 16px;
+}
+
+.DashContent {
+	padding-top: 75px;
+}
+
+.DashNav {
+	font-family: 'Sigmar One', cursive;
+	color: #777;
+	background-color: lightgrey;
+	box-shadow: 0px 5px 5px #888888;
+}
+
+.Info {
+	  padding-top: 10px;
+	  padding-bottom: 10px;
+}
+
+.InfoBlock {
+	display:block;
+	text-align: -webkit-center;
+	border: 2px solid rgba(255, 255, 255, .5);
+	border-radius: 5px;
+	box-shadow: 8px 5px 5px #888888;
+}
+.InfoBlock.Created {
+	background-color: cornflowerblue;
+}
+.InfoBlock.Used {
+	background-color: lightgreen;
+}
+
+.button-row {
+	display:block;
+	text-align:center;
+	font-family: 'Sigmar One', cursive;
+}
+
+.btn-group {
+	border: 1px solid rgba(255, 255, 255, .5);
+	border-radius: 5px;
+	box-shadow: 8px 5px 5px #888888;
+}
+
+.num {
+	font-family: 'Sigmar One', cursive;
+	font-size: -webkit-xxx-large;
+}
+
+.text {
+	font-family: 'Sigmar One', cursive;
+	margin-top: 15px;
+ 	margin-bottom: 30px;
+  	font-size: x-large;
+}
+
+.WeeklyInfo {
+	  padding-top: 10px;
+	  padding-bottom: 10px;
+	  margin-top: 5%;
+	  margin-bottom: 25%;
+}
+.CreatedGraphBox {
+	display:block;
+	text-align: -webkit-center;
+	border: 2px solid rgba(255, 255, 255, .5);
+	border-radius: 5px;
+	box-shadow: 8px 5px 5px #888888;
+	background-color: lightgray;
+}

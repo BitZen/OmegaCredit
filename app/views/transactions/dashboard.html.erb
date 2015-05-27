@@ -1,1 +1,179 @@
-testing
+<link href='http://fonts.googleapis.com/css?family=Sigmar+One' rel='stylesheet' type='text/css'>
+<% body_class "dashboard" %>
+<div class="navbar navbar-default DashNav">
+	<div class="container-fluid">
+		<div class="navbar-header">
+	      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+	        <span class="sr-only">Toggle navigation</span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	      </button>
+	      <a class="navbar-brand" href="#">Omega Dashboard <i class="fa fa-tachometer"></i></a>
+	    </div>
+	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      		<ul class="nav navbar-nav navbar-right">
+      		 <li class="dropdown">
+	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Generate Report<span class="caret"></span></a>
+	          <ul class="dropdown-menu" role="menu">
+	            <li><a href="#">Daily</a></li>
+	            <li class="divider"></li>
+	            <li><a href="#">Weekly</a></li>
+				<li class="divider"></li>
+	            <li><a href="#">Monthly</a></li>
+				<li class="divider"></li>
+	            <li><a href="#">Quarterly</a></li>
+	            <li class="divider"></li>
+	            <li><a href="#">Annual</a></li>
+	          </ul>
+	        </li>
+	        <li>
+	        	<%= link_to root_path do %><i class="fa fa-home fa-2x" style="vertical-align:middle;"></i><%end%>
+	        </li>
+	      </ul>
+    	</div><!-- /.navbar-collapse -->
+	</div>
+</div>
+<div class="container-fluid DashContent">
+	<div class="row-fluid">
+		<div class="col-md-4">
+			<div class="Info panel-default Daily-Created">
+					<div class="InfoBlock Created panel-body">
+					<p class="num"><%= credit_info("today","count","create") %></p>
+					<p class="text">New Credits Today</p>
+					<p class="text">Valued At:</p>
+					<p class="num"><%= credit_info("today","amount","create") %></p>
+					</div>
+			</div>
+			<div class="Info panel-default Weekly-Created">
+				<div class="InfoBlock Created panel-body">
+						<p class="num"><%= credit_info("weekly","count","create") %></p>
+						<p class="text">New Credits This Week</p>
+						<p class="text">Valued At:</p>
+						<p class="num"><%= credit_info("weekly","amount","create") %></p>
+				</div>	 
+			</div>
+			<div class="Info panel-default Monthly-Created">
+				<div class="InfoBlock Created panel-body">
+						<p class="num"><%= credit_info("monthly","count","create") %></p>
+						<p class="text">New Credits This Month</p>
+						<p class="text">Valued At:</p>
+						<p class="num"><%= credit_info("monthly","amount","create") %></p>
+				</div>	 
+			</div>
+			</br>
+			<div class="row  button-row">
+			<div class="btn-group" role="group" aria-label="...">
+			  <button type="button" class="btn btn-default" id="created-daily-btn">Daily</button>
+			  <button type="button" class="btn btn-default" id="created-weekly-btn">Weekly</button>
+			  <button type="button" class="btn btn-default" id="created-monthly-btn">Monthly</button>
+			</div>
+		</div>
+		</div>
+		<div class="col-md-8">
+			<div class="Info panel-default">
+				<div class="panel-body CreatedGraphBox">
+				    <canvas id="weekly-created-graph" width="600" height="250">[No canvas support]</canvas>
+				    <canvas id="monthly-created-graph" width="600" height="250">[No canvas support]</canvas>
+				    <script>
+				        $(document).ready(function ()
+				        {
+				            var line = new RGraph.Line({
+				                id: 'weekly-created-graph',
+				                data: <%= weekly_array("create") %>,
+				                options: {
+				                    labels: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+				                }
+				            }).draw()
+				        })
+				    </script>
+				    <script>
+				        $(document).ready(function ()
+				        {
+				            var line = new RGraph.Line({
+				                id: 'monthly-created-graph',
+				                data: <%= monthly_array("create") %>,
+				                options: {
+				                    labels: <%=month_label%>
+				                }
+				            }).draw()
+				        })
+				    </script>				
+				</div>
+			</div>
+		</div>
+	</div>	
+	<div class="row-fluid">
+		<div class="col-md-4">
+			<div class="Info panel-default Daily-Used">
+					<div class="InfoBlock Used panel-body">
+					<p class="num"><%= credit_info("today","count","use") %></p>
+					<p class="text">Credits Used Today</p>
+					<p class="text">Valued At:</p>
+					<p class="num"><%= credit_info("today","amount","use") %></p>
+					</div>
+			</div>
+			<div class="Info panel-default Weekly-Used">
+				<div class="InfoBlock Used panel-body">
+						<p class="num"><%= credit_info("weekly","count","use") %></p>
+						<p class="text">Credits Used This Week</p>
+						<p class="text">Valued At:</p>
+						<p class="num"><%= credit_info("weekly","amount","use") %></p>
+				</div>	 
+			</div>
+			<div class="Info panel-default Monthly-Used">
+				<div class="InfoBlock Used panel-body">
+						<p class="num"><%= credit_info("monthly","count","use") %></p>
+						<p class="text">Credits Used This Month</p>
+						<p class="text">Valued At:</p>
+						<p class="num"><%= credit_info("monthly","amount","use") %></p>
+				</div>	 
+			</div>
+			</br>
+			<div class="row button-row">
+				<div class="btn-group" role="group" aria-label="...">
+				  <button type="button" class="btn btn-default" id="used-daily-btn">Daily</button>
+				  <button type="button" class="btn btn-default" id="used-weekly-btn">Weekly</button>
+				  <button type="button" class="btn btn-default" id="used-monthly-btn">Monthly</button>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-8">
+			<div class="Info panel-default">
+				<div class="panel-body CreatedGraphBox">
+				    <canvas id="weekly-used-graph" width="600" height="250">[No canvas support]</canvas>
+				    <canvas id="monthly-used-graph" width="600" height="250">[No canvas support]</canvas>
+				    <script>
+				        $(document).ready(function ()
+				        {
+				            var line = new RGraph.Line({
+				                id: 'weekly-used-graph',
+				                data: <%= weekly_array("use") %>,
+				                options: {
+				                    labels: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+				                }
+				            }).draw()
+				        })
+				    </script>
+				    <script>
+				        $(document).ready(function ()
+				        {
+				            var line = new RGraph.Line({
+				                id: 'monthly-used-graph',
+				                data: <%= monthly_array("use") %>,
+				                options: {
+				                    labels: <%= month_label %>
+				                }
+				            }).draw()
+				        })
+				    </script>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+    $(document).ready(function ()
+    {
+    });
+</script>

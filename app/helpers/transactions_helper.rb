@@ -28,8 +28,8 @@ module TransactionsHelper
 	def month_label
 		array = []
 		days = Time.days_in_month(Date.today.month,Date.today.year)
-		$i = 0
-		until $i == days
+		$i = 1
+		until $i == (days + 1)
 			array << $i
 			$i += 1
 		end

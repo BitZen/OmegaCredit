@@ -4,12 +4,21 @@ class TransactionsController < ApplicationController
   def dashboard
     
   end
+
+  def report
+    @transactions = init_report(params[:type])
+    report = params[:type]+"_report"
+    respond_to do |format|
+      format.html {}
+      format.xlsx {render report}
+    end
+  end
+  
   # GET /transactions
   # GET /transactions.json
   def index
     @transactions = Transaction.all
   end
-
   # GET /transactions/1
   # GET /transactions/1.json
   def show
@@ -74,5 +83,20 @@ class TransactionsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def transaction_params
       params.require(:transaction).permit(:type, :credit_holder_id, :amount, :donate, :num_books, :amount_used, :amount_remaining)
+    end
+
+    def init_report(type)
+      case type
+        when "daily"
+          return Transaction.where("created_at >= ?", Time.zone.now.beginning_of_day)
+        when "weekly"
+          return Transaction.date_range("any", Date.today.beginning_of_week.beginning_of_day, DateTime.now)
+        when "monthly"
+          return Transaction.date_range("any", Date.today.beginning_of_month.beginning_of_day, DateTime.now)
+        when "quarterly"
+          generate_quarterly_report
+        when "annual"
+          generate_annual_report
+      end
     end
 end

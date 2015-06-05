@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   resources :transactions
   resources :credits
   resources :credit_holders
+  get 'reports/:type.:format' => 'transactions#report', as: :report  
   get'/process_transaction' => 'credits#process_transaction'
   get '/checkout/:credit_holder_id' => 'credits#checkout', as: :checkout
   get 'credits/new/:credit_holder_id' => 'credits#new'

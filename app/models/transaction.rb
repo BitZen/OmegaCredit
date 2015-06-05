@@ -1,7 +1,8 @@
 class Transaction < ActiveRecord::Base
+	acts_as_xlsx
 	belongs_to :credit_holder
 	belongs_to :credit
-
+	
 
 	def self.get_transactions(id)
 		transactions = Transaction.where(:credit_holder_id => id).order(:created_at => "DESC")
@@ -13,6 +14,8 @@ class Transaction < ActiveRecord::Base
 		transactions = Transaction.where(:created_at => start..stop, :event => "create")
 		elsif type == "use"
 		transactions = Transaction.where(:created_at => start..stop, :event => "use")
+		elsif type == "any"
+		transactions = Transaction.where(:created_at => start..stop)
 		end	
 		return transactions
 	end

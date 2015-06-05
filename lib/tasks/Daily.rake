@@ -1,6 +1,7 @@
 desc "set status column to expired for all credits past expiration"
 task :expire => :environment do
 	creds = Credit.where("expires_at <= ? AND status = ?", Time.now, "active")
+	Rails.logger.info "Expiring #{creds.count} credits!"
 	creds.each do |c|
 		c.update(:status => "expired")
 		puts c.expires_at

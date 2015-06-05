@@ -15,11 +15,11 @@
       		 <li class="dropdown">
 	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Generate Report<span class="caret"></span></a>
 	          <ul class="dropdown-menu" role="menu">
-	            <li><a href="#">Daily</a></li>
+	            <li><%= link_to "Daily", report_path("daily", 'xlsx') %></li>
 	            <li class="divider"></li>
-	            <li><a href="#">Weekly</a></li>
+	            <li><%= link_to "Weekly", report_path("weekly", 'xlsx') %></li>
 				<li class="divider"></li>
-	            <li><a href="#">Monthly</a></li>
+	            <li><%= link_to "Monthly", report_path("monthly", 'xlsx') %></li>
 				<li class="divider"></li>
 	            <li><a href="#">Quarterly</a></li>
 	            <li class="divider"></li>

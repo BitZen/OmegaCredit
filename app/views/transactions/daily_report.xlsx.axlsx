@@ -1,0 +1,7 @@
+wb = xlsx_package.workbook
+wb.add_worksheet(name: "Credits") do |sheet|
+sheet.add_row ['Type', 'Amount', 'Number of books', 'Donate', 'Amount Used', 'Amount Remaining', 'Owner']
+	@transactions.each do |t|
+		sheet.add_row [t.event, t.amount, t.num_books, t.donate, t.amount_used, t.amount_remaining, CreditHolder.find(t.credit_holder_id).first_name+' '+CreditHolder.find(t.credit_holder_id).last_name]
+	end
+end

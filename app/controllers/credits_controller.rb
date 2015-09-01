@@ -1,6 +1,5 @@
 class CreditsController < ApplicationController
   before_action :set_credit, only: [:show, :edit, :update, :destroy]
-  include CreditsHelper
   include ActionView::Helpers::NumberHelper
   
   def checkout
@@ -122,4 +121,57 @@ class CreditsController < ApplicationController
     def credit_params
       params.require(:credit).permit(:amount, :expires_at, :status, :credit_holder_id, :send_email, :donate, :num_books)
     end
+
+    def cashier(holder_id,owed)
+      subtotal = owed
+      credits = credits_from_id(holder_id)
+      payment = get_oldest(credits)
+
+      if subtotal == 0
+        logger.info "TOTAL IS ZERO"
+        puts subtotal
+      elsif payment.present? != true
+        logger.info "NO PAYMENT PRESENT #{owed} IS STILL OWED"
+        return owed 
+      elsif payment.present? and subtotal >= payment["amount"]
+        logger.info "PAYMENT OF #{payment['amount']} IS PRESENT AND LESS THAN OR EQUAL TO THE TOTAL OF #{subtotal}" 
+        remainder = subtotal - payment["amount"]
+        self.credit_used(payment["id"])
+        transaction = Transaction.new do |t|
+              t.event = "use"
+              t.amount_used = payment["amount"]
+              t.amount_remaining = 0
+              t.credit_id = payment["id"]
+              t.credit_holder_id = holder_id
+            end
+            if transaction.save
+              logger.info "New Transaction: #{transaction.attributes.inspect}"
+            else 
+              logger.warn "Transaction did not save"
+            end
+        payment = nil
+      elsif payment.present? and subtotal < payment["amount"]
+        logger.info "THE PAYMENT OF #{payment['amount']} IS PRESENT AND GREATER THAN THE TOTAL OF #{subtotal}"
+        change = payment["amount"] - subtotal
+        self.credit_balance(payment["id"], change)
+        transaction = Transaction.new do |t|
+              t.event = "use"
+              t.amount_used = subtotal
+              t.amount_remaining = change
+              t.credit_id = payment["id"]
+              t.credit_holder_id = holder_id
+            end
+            if transaction.save
+              logger.info "New Transaction: #{transaction.attributes.inspect}"
+            else 
+                logger.warn "Transaction did not save"
+            end 
+      end
+
+      if remainder
+        puts "#{remainder} IS STILL OWED USING NEXT CREDIT"
+        self.cashier(holder_id,remainder)
+      end
+    end
+
 end

@@ -1,7 +1,7 @@
 class CreditsController < ApplicationController
   before_action :set_credit, only: [:show, :edit, :update, :destroy]
   include ActionView::Helpers::NumberHelper
-  
+
   def checkout
     @credit_holder = CreditHolder.find(params[:credit_holder_id])
   end
@@ -9,16 +9,14 @@ class CreditsController < ApplicationController
   def process_transaction
     @total = params[:total].to_f
     id = params[:credit_holder_id]
-    @credits = credits_from_id(params[:credit_holder_id])
-    @oldest = get_oldest(@credits)
-    puts '********************************************'
+    @credits = Credit.credits_from_id(id)
+    @oldest = @credits.sort_by { |c| c["created_at"]}.first
     @paymentamount = cashier(id, @total)
-    puts '********************************************'
-    update_credits_total(params[:credit_holder_id])
+    CreditHolder.update_credits_total(params[:credit_holder_id])
     flash[:notice] = "Transaction Complete"
     redirect_to root_path
 
-  end 
+  end
 
   def add_credit(credit_holder, credit)
     new_total = credit.amount + credit_holder.credits_total
@@ -66,7 +64,7 @@ class CreditsController < ApplicationController
         end
         if transaction.save
           logger.info "New Transaction: #{transaction.attributes.inspect}"
-        else 
+        else
           logger.warn "Transaction did not save"
         end
         if  @credit[:send_email] == 1 && creditholder.email_address.present?
@@ -74,7 +72,7 @@ class CreditsController < ApplicationController
           notice = 'Credit was successfully created and Email notification was sent.'
         elsif @credit[:send_email] == 0
           notice = 'Credit was successfully created.'
-        else 
+        else
           notice = 'Credit was successfully created but Email notification was NOT sent, check to see if we have a valid email for that customer.'
         end
         add_credit(creditholder, @credit)
@@ -122,21 +120,22 @@ class CreditsController < ApplicationController
       params.require(:credit).permit(:amount, :expires_at, :status, :credit_holder_id, :send_email, :donate, :num_books)
     end
 
+  	#TODO: this code is not DRY and out of place, refactor into cashier PORO?
     def cashier(holder_id,owed)
       subtotal = owed
-      credits = credits_from_id(holder_id)
-      payment = get_oldest(credits)
+      credits = Credit.credits_from_id(holder_id)
+      payment = credits.sort_by { |c| c["created_at"]}.first
 
       if subtotal == 0
         logger.info "TOTAL IS ZERO"
         puts subtotal
       elsif payment.present? != true
         logger.info "NO PAYMENT PRESENT #{owed} IS STILL OWED"
-        return owed 
+        return owed
       elsif payment.present? and subtotal >= payment["amount"]
-        logger.info "PAYMENT OF #{payment['amount']} IS PRESENT AND LESS THAN OR EQUAL TO THE TOTAL OF #{subtotal}" 
+        logger.info "PAYMENT OF #{payment['amount']} IS PRESENT AND LESS THAN OR EQUAL TO THE TOTAL OF #{subtotal}"
         remainder = subtotal - payment["amount"]
-        self.credit_used(payment["id"])
+        Credit.credit_used(payment["id"])
         transaction = Transaction.new do |t|
               t.event = "use"
               t.amount_used = payment["amount"]
@@ -146,14 +145,14 @@ class CreditsController < ApplicationController
             end
             if transaction.save
               logger.info "New Transaction: #{transaction.attributes.inspect}"
-            else 
+            else
               logger.warn "Transaction did not save"
             end
         payment = nil
       elsif payment.present? and subtotal < payment["amount"]
         logger.info "THE PAYMENT OF #{payment['amount']} IS PRESENT AND GREATER THAN THE TOTAL OF #{subtotal}"
         change = payment["amount"] - subtotal
-        self.credit_balance(payment["id"], change)
+        Credit.credit_balance(payment["id"], change)
         transaction = Transaction.new do |t|
               t.event = "use"
               t.amount_used = subtotal
@@ -163,14 +162,14 @@ class CreditsController < ApplicationController
             end
             if transaction.save
               logger.info "New Transaction: #{transaction.attributes.inspect}"
-            else 
+            else
                 logger.warn "Transaction did not save"
-            end 
+            end
       end
 
       if remainder
         puts "#{remainder} IS STILL OWED USING NEXT CREDIT"
-        self.cashier(holder_id,remainder)
+        cashier(holder_id,remainder)
       end
     end
 
